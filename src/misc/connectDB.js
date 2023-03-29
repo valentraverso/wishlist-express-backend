@@ -1,15 +1,16 @@
 const mongoose = require("mongoose")
 
-function connectDB(port, db){
+function connectDB(app, port, db){
     mongoose.connect(db)
         .then(() => {
-            console.log(
-                `|--- Connected in the wishlist server ---|
-                PORT: ${port}`
-            )
+            app.listen(port, () => {
+                console.log(`|--- Connected in the wishlist server ---|
+                PORT: ${port}`)
+            })
         })
         .catch(err => {
-            throw new Error(err)
+            console.error(`Server connect failed`);
+            new Error(err);
         })
 }
 
