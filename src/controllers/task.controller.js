@@ -59,6 +59,32 @@ const taskController = {
                 msg: "There was an error while updating"
             }
         }
+    },
+    deleteTask: async (req, res) => {
+        const { params: { idTask } } = req;
+
+        if (!mongoose.Types.ObjectId.isValid(idTask)) {
+            return res.status(404).send({
+                status: "FALSE",
+                msg: `${idTask} is invalid`
+            })
+        }
+
+        try {
+            const task = await Task
+            .findByIdAndRemove(idTask)
+
+            res.status(200).send({
+                status: "TRUE",
+                msg: "Task deleted successfully.",
+                data: task
+            })
+        } catch (err) {
+            return {
+                status: "FALSE",
+                msg: "There was an error while deleting"
+            }
+        }
     }
 }
 
