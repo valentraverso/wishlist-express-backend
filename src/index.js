@@ -9,7 +9,7 @@ const {
     PORT,
     DB_URI
 } = require("./config/config");
-const jwtCheck = require("./misc/authz")
+const jwtCheck = require("./middlewares/authz")
 
 app.use(cors());
 app.use(express.json())

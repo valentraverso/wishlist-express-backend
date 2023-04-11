@@ -5,10 +5,17 @@ const taskSchema = new Schema({
         type: String,
         required: true
     },
+    completed: {
+        type: Boolean,
+        default: false,
+        required: true
+    },
     status: {
         type: Number,
         required: true
     }
+},{
+    timestamps: true
 })
 
 module.exports = model('tasks', taskSchema)

@@ -3,14 +3,17 @@ const Task = require("../models/task.model");
 
 const taskController = {
     getAllTask: async (req, res) => {
-        try{
-            const task = await Task.find({})
+        try {
+            const task = await Task
+                .find({})
+                .sort({ _id: -1 });
+
             res.status(200).send({
                 status: 'Completed',
                 data: task
             });
             console.log('nuevo usuario')
-        }catch(err){
+        } catch (err) {
             res.status(409).send(err);
         }
     },
