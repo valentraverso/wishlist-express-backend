@@ -29,6 +29,33 @@ const taskController = {
         } catch (err) {
             res.status(409).send(err);
         }
+    },
+    updateTask: async (req, res) => {
+        const { body, params } = req;
+
+        const { idTask } = params;
+
+        console.log(params)
+
+        try {
+            const task = await Task
+                .findOneAndReplace(
+                    { _id: idTask },
+                    { ...body },
+                    { new: true }
+                )
+
+            res.status(200).send({
+                status: "TRUE",
+                msg: "Task updated successfully.",
+                data: task
+            })
+        } catch (err) {
+            return {
+                status: "FALSE",
+                msg: "There was an error while updating"
+            }
+        }
     }
 }
 
