@@ -31,16 +31,19 @@ const taskController = {
         }
     },
     updateTask: async (req, res) => {
-        const { body, params } = req;
+        const { body, params: { idTask } } = req;
 
-        const { idTask } = params;
-
-        console.log(params)
+        if (!mongoose.Types.ObjectId.isValid(idTask)) {
+            return res.status(404).send({
+                status: "FALSE",
+                msg: `${idTask} is invalid`
+            })
+        }
 
         try {
             const task = await Task
-                .findOneAndReplace(
-                    { _id: idTask },
+                .findByIdAndUpdate(
+                    idTask,
                     { ...body },
                     { new: true }
                 )
