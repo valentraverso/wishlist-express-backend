@@ -9,8 +9,8 @@ function connectDB(app, port, db){
             })
         })
         .catch(err => {
-            console.error(`Server connect failed`);
-            new Error(err);
+            console.error(`Server connect failed
+            log> ${err}`);
         })
 }
 
