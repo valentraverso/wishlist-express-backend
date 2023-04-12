@@ -85,6 +85,23 @@ const taskController = {
                 msg: "There was an error while deleting"
             }
         }
+    },
+    deleteAllTask: async (req, res) => {
+        try{
+            const task = await Task
+                .deleteMany({})
+            
+            res.status(200).send({
+                status: "TRUE",
+                msg: "All tasks deleted.",
+                data: task
+            })
+        }catch(err){
+            return {
+                status: "FALSE",
+                msg: "There was an error while deleting"
+            }
+        }
     }
 }
 
