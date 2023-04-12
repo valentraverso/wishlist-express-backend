@@ -8,5 +8,6 @@ router
     .post('/upload', postTask)
     .patch('/update/:idTask', updateTask)
     .delete('/delete/:idTask', deleteTask)
+    .delete('/delete/all')
 
 module.exports = router;
