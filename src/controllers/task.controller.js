@@ -64,7 +64,7 @@ const taskController = {
         const { params: { idTask } } = req;
 
         if (!mongoose.Types.ObjectId.isValid(idTask)) {
-            return res.status(404).send({
+            return res.status(409).send({
                 status: "FALSE",
                 msg: `${idTask} is invalid`
             })
