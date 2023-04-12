@@ -2,10 +2,12 @@ const mongoose = require("mongoose")
 const Task = require("../models/task.model");
 
 const taskController = {
-    getAllTask: async (req, res) => {
+    getAllTask: async (req, res, next) => {
+        const { payload: { sub } } = req.auth;
+
         try {
             const task = await Task
-                .find({})
+                .find({ userSub: sub })
                 .sort({ _id: -1 });
 
             res.status(200).send({
@@ -16,12 +18,18 @@ const taskController = {
         } catch (err) {
             res.status(409).send(err);
         }
+
+        next()
     },
     postTask: async (req, res) => {
         const { body } = req;
+        const { payload: { sub } } = req.auth;
 
         try {
-            const task = await Task.create({ ...body })
+            const task = await Task.create({
+                ...body,
+                userSub: sub
+            })
             res.status(200).send({
                 status: 'Upload',
                 data: task
@@ -32,9 +40,10 @@ const taskController = {
     },
     updateTask: async (req, res) => {
         const { body, params: { idTask } } = req;
+        const { payload: { sub } } = req.auth;
 
         if (!mongoose.Types.ObjectId.isValid(idTask)) {
-            return res.status(404).send({
+            return res.status(409).send({
                 status: "FALSE",
                 msg: `${idTask} is invalid`
             })
@@ -47,6 +56,13 @@ const taskController = {
                     { ...body },
                     { new: true }
                 )
+
+            if (task.userSub !== sub) {
+                return res.status(409).send({
+                    status: "FALSE",
+                    msg: `You are not the owner of this task`
+                })
+            }
 
             res.status(200).send({
                 status: "TRUE",
@@ -62,6 +78,7 @@ const taskController = {
     },
     deleteTask: async (req, res) => {
         const { params: { idTask } } = req;
+        const { payload: { sub } } = req.auth;
 
         if (!mongoose.Types.ObjectId.isValid(idTask)) {
             return res.status(409).send({
@@ -72,7 +89,14 @@ const taskController = {
 
         try {
             const task = await Task
-            .findByIdAndRemove(idTask)
+                .findByIdAndRemove(idTask);
+
+            if (task.userSub !== sub) {
+                return res.status(409).send({
+                    status: "FALSE",
+                    msg: `You are not the owner of this task`
+                })
+            }
 
             res.status(200).send({
                 status: "TRUE",
@@ -87,16 +111,17 @@ const taskController = {
         }
     },
     deleteAllTask: async (req, res) => {
-        try{
+        const { payload: { sub } } = req.auth;
+        try {
             const task = await Task
-                .deleteMany({})
-            
+                .deleteMany({ userSub: sub })
+
             res.status(200).send({
                 status: "TRUE",
                 msg: "All tasks deleted.",
                 data: task
             })
-        }catch(err){
+        } catch (err) {
             return {
                 status: "FALSE",
                 msg: "There was an error while deleting"
