@@ -32,9 +32,7 @@ const taskController = {
             .create({
                 ...body,
                 userSub: sub
-            })
-            .lean()
-            .exec();
+            });
 
             res.status(200).send({
                 status: 'Upload',
