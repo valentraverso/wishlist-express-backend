@@ -51,18 +51,14 @@ const taskController = {
 
         try {
             const task = await Task
-                .findByIdAndUpdate(
-                    idTask,
+                .findOneAndUpdate(
+                    {
+                        _id: idTask,
+                        userSub: sub
+                    },
                     { ...body },
                     { new: true }
                 )
-
-            if (task.userSub !== sub) {
-                return res.status(409).send({
-                    status: "FALSE",
-                    msg: `You are not the owner of this task`
-                })
-            }
 
             res.status(200).send({
                 status: "TRUE",
@@ -89,14 +85,10 @@ const taskController = {
 
         try {
             const task = await Task
-                .findByIdAndRemove(idTask);
-
-            if (task.userSub !== sub) {
-                return res.status(409).send({
-                    status: "FALSE",
-                    msg: `You are not the owner of this task`
-                })
-            }
+                .findOneAndDelete({
+                    _id: idTask,
+                    userSub: sub
+                });
 
             res.status(200).send({
                 status: "TRUE",
@@ -130,4 +122,4 @@ const taskController = {
     }
 }
 
-module.exports = taskController
+module.exports = taskController;
