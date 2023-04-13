@@ -8,7 +8,9 @@ const taskController = {
         try {
             const task = await Task
                 .find({ userSub: sub })
-                .sort({ _id: -1 });
+                .sort({ _id: -1 })
+                .lean()
+                .exec();
 
             res.status(200).send({
                 status: 'Completed',
@@ -26,10 +28,14 @@ const taskController = {
         const { payload: { sub } } = req.auth;
 
         try {
-            const task = await Task.create({
+            const task = await Task
+            .create({
                 ...body,
                 userSub: sub
             })
+            .lean()
+            .exec();
+
             res.status(200).send({
                 status: 'Upload',
                 data: task
@@ -59,6 +65,8 @@ const taskController = {
                     { ...body },
                     { new: true }
                 )
+                .lean()
+                .exec();
 
             res.status(200).send({
                 status: "TRUE",
@@ -88,7 +96,9 @@ const taskController = {
                 .findOneAndDelete({
                     _id: idTask,
                     userSub: sub
-                });
+                })
+                .lean()
+                .exec();
 
             res.status(200).send({
                 status: "TRUE",
@@ -107,6 +117,8 @@ const taskController = {
         try {
             const task = await Task
                 .deleteMany({ userSub: sub })
+                .lean()
+                .exec();
 
             res.status(200).send({
                 status: "TRUE",
